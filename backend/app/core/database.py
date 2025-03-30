@@ -3,7 +3,7 @@ import chromadb
 from chromadb.utils import embedding_functions
 from dotenv import load_dotenv
 import os
-import embeddings
+from app.core import embeddings
 
 load_dotenv()
 # openai_embed = embedding_functions.OpenAIEmbeddingFunction(
