@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 export default function Footer() {
   return (
-    <footer className="border-t border-border bg-background">
+    <footer className="border-t border-solid border-gray-200 dark:border-gray-800 bg-background">
       <div className="container py-8 md:py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="space-y-4">
@@ -57,7 +57,7 @@ export default function Footer() {
             </ul>
           </div>
         </div>
-        <div className="mt-8 border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center">
+        <div className="mt-8 border-t border-solid border-gray-200 dark:border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-sm text-muted-foreground">
             &copy; {new Date().getFullYear()} Prince. All rights reserved.
           </p>

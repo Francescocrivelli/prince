@@ -41,7 +41,7 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-sm">
+    <nav className="sticky top-0 z-50 w-full border-b border-solid border-gray-200 dark:border-gray-800 bg-background/80 backdrop-blur-sm">
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-6">
           <Link href="/" className="flex items-center gap-2">
@@ -98,7 +98,7 @@ export default function Navbar() {
       {/* Mobile menu */}
       <div
         className={cn(
-          "md:hidden fixed inset-x-0 top-16 z-50 mt-px bg-background border-b border-border transition-all duration-200 ease-in-out",
+          "md:hidden fixed inset-x-0 top-16 z-50 mt-px bg-background border-b border-solid border-gray-200 dark:border-gray-800 transition-all duration-200 ease-in-out",
           isMobileMenuOpen ? "block" : "hidden"
         )}
       >

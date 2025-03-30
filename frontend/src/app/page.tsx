@@ -68,7 +68,7 @@ export default function Home() {
                   <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
                     Your AI-Powered Productivity Assistant
                   </h1>
-                  <p className="max-w-[600px] text-muted-foreground md:text-xl">
+                  <p className="max-w-[600px] text-gray-500 dark:text-gray-400 md:text-xl">
                     Boost your productivity with Prince. Our AI-powered platform helps you focus on what matters most.
                   </p>
                 </div>
@@ -94,40 +94,40 @@ export default function Home() {
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
               >
-                <div className="relative h-[350px] w-full max-w-[500px] overflow-hidden rounded-lg border bg-background p-2 shadow-xl">
-                  <div className="absolute top-0 left-0 right-0 h-12 rounded-t-lg bg-muted flex items-center px-4">
+                <div className="relative h-[350px] w-full max-w-[500px] overflow-hidden rounded-lg border bg-white dark:bg-gray-950 p-2 shadow-xl">
+                  <div className="absolute top-0 left-0 right-0 h-12 rounded-t-lg bg-gray-100 dark:bg-gray-900 flex items-center px-4">
                     <div className="flex space-x-2">
-                      <div className="h-3 w-3 rounded-full bg-destructive" />
+                      <div className="h-3 w-3 rounded-full bg-red-500" />
                       <div className="h-3 w-3 rounded-full bg-yellow-500" />
                       <div className="h-3 w-3 rounded-full bg-green-500" />
                     </div>
                   </div>
                   <div className="mt-12 p-4 space-y-4">
                     <motion.div
-                      className="h-8 w-4/5 rounded-md bg-muted"
+                      className="h-8 w-4/5 rounded-md bg-gray-100 dark:bg-gray-800"
                       animate={{ 
-                        backgroundColor: isHovered ? "hsl(var(--primary) / 0.2)" : "hsl(var(--muted))"
+                        backgroundColor: isHovered ? "rgb(243 244 246 / 0.2)" : "rgb(243 244 246)"
                       }}
                       transition={{ duration: 0.3 }}
                     />
                     <motion.div
-                      className="h-8 w-3/5 rounded-md bg-muted"
+                      className="h-8 w-3/5 rounded-md bg-gray-100 dark:bg-gray-800"
                       animate={{ 
-                        backgroundColor: isHovered ? "hsl(var(--primary) / 0.2)" : "hsl(var(--muted))"
+                        backgroundColor: isHovered ? "rgb(243 244 246 / 0.2)" : "rgb(243 244 246)"
                       }}
                       transition={{ duration: 0.3, delay: 0.1 }}
                     />
                     <motion.div
-                      className="h-24 w-full rounded-md bg-muted"
+                      className="h-24 w-full rounded-md bg-gray-100 dark:bg-gray-800"
                       animate={{ 
-                        backgroundColor: isHovered ? "hsl(var(--primary) / 0.2)" : "hsl(var(--muted))"
+                        backgroundColor: isHovered ? "rgb(243 244 246 / 0.2)" : "rgb(243 244 246)"
                       }}
                       transition={{ duration: 0.3, delay: 0.2 }}
                     />
                     <motion.div
-                      className="h-8 w-2/5 rounded-md bg-muted"
+                      className="h-8 w-2/5 rounded-md bg-gray-100 dark:bg-gray-800"
                       animate={{ 
-                        backgroundColor: isHovered ? "hsl(var(--primary) / 0.2)" : "hsl(var(--muted))"
+                        backgroundColor: isHovered ? "rgb(243 244 246 / 0.2)" : "rgb(243 244 246)"
                       }}
                       transition={{ duration: 0.3, delay: 0.3 }}
                     />
@@ -139,12 +139,12 @@ export default function Home() {
         </section>
 
         {/* Features Section */}
-        <section className="bg-muted/40 py-20">
+        <section className="bg-gray-50 dark:bg-gray-900 py-20">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Features</h2>
-                <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed">
+                <p className="max-w-[900px] text-gray-500 dark:text-gray-400 md:text-xl/relaxed">
                   Everything you need to build your next project.
                 </p>
               </div>
@@ -159,12 +159,12 @@ export default function Home() {
               {features.map((feature, i) => (
                 <motion.div 
                   key={i} 
-                  className="flex flex-col items-center space-y-4 rounded-lg border bg-background p-6 shadow-sm"
+                  className="flex flex-col items-center space-y-4 rounded-lg border bg-white dark:bg-gray-950 p-6 shadow-sm"
                   variants={fadeIn}
                 >
                   {feature.icon}
                   <h3 className="text-xl font-bold">{feature.title}</h3>
-                  <p className="text-muted-foreground">{feature.description}</p>
+                  <p className="text-gray-500 dark:text-gray-400">{feature.description}</p>
                 </motion.div>
               ))}
             </motion.div>
@@ -183,7 +183,7 @@ export default function Home() {
                 viewport={{ once: true }}
               >
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Ready to get started?</h2>
-                <p className="max-w-[600px] text-muted-foreground md:text-xl/relaxed">
+                <p className="max-w-[600px] text-gray-500 dark:text-gray-400 md:text-xl/relaxed">
                   Sign up today and experience the future of productivity.
                 </p>
               </motion.div>
