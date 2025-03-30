@@ -9,10 +9,10 @@ export default function Footer() {
           <div className="space-y-4">
             <div className="flex items-center gap-2">
               <div className="h-8 w-8 rounded-md bg-indigo-600 dark:bg-indigo-500 flex items-center justify-center">
-                <Sparkles className="h-5 w-5 text-white" />
+                <span role="img" aria-label="bunny">🐰</span>
               </div>
               <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-indigo-400 dark:to-violet-400">
-                Prince
+               Find My Bun
               </span>
             </div>
             <p className="text-sm text-gray-500 dark:text-gray-400">
