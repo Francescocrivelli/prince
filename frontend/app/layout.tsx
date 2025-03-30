@@ -1,15 +1,17 @@
-'use client';
-
-import { Geist } from "next/font/google";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
-import { AuthProvider } from '@/contexts/AuthContext';
-import TopBar from '../components/TopBar';
-import ProtectedRoute from '@/contexts/ProtectedRoute';
-import { Analytics } from "@vercel/analytics/react"
-// import { PostHogProvider } from '@/contexts/PostHogContext';
-// import { PostHogErrorBoundary } from '@/components/PostHogErrorBoundary';
+import { ThemeProvider } from "@/components/theme-provider";
 
-const geist = Geist({ subsets: ['latin'] });
+const inter = Inter({ subsets: ["latin"] });
+
+export const metadata: Metadata = {
+  title: "Prince - Exclusive AI Career Companion for Students",
+  description: "Prince is an exclusive community for talented students to connect with tech startups and get discovered. $7/month for direct connections to opportunities.",
+  keywords: ["student careers", "AI career companion", "tech startups", "job matching", "exclusive community"],
+  authors: [{ name: "Prince Team" }],
+  creator: "Prince Team",
+};
 
 export default function RootLayout({
   children,
@@ -17,19 +19,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={geist.className}>
-        <Analytics mode="auto" />
-        {/* <PostHogErrorBoundary>
-          <PostHogProvider> */}
-            <AuthProvider>   
-                <ProtectedRoute>
-                  <TopBar />    
-                  <main>{children}</main>
-                </ProtectedRoute>
-            </AuthProvider>
-          {/* </PostHogProvider>
-        </PostHogErrorBoundary> */}
+    <html lang="en" suppressHydrationWarning>
+      <body className={inter.className}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
