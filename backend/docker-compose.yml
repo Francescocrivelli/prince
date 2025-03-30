@@ -1,0 +1,23 @@
+version: "3.9"
+
+services:
+  backend:
+    build: .
+    ports:
+      - "8080:8000"
+    depends_on:
+      - chroma
+    env_file:
+      - ../.env
+    volumes:
+      - .:/app
+
+  chroma:
+    image: ghcr.io/chroma-core/chroma:latest
+    ports:
+      - "8000:8000"
+    volumes:
+      - chroma_data:/chroma/chroma
+
+volumes:
+  chroma_data:
