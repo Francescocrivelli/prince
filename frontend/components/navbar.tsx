@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { Menu, X } from 'lucide-react'
 import { Button } from './ui/button'
+import { ThemeToggle } from './ui/theme-toggle'
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false)
@@ -51,6 +52,7 @@ export default function Navbar() {
 
         {/* Right - Buttons */}
         <div className="hidden md:flex items-center gap-4 flex-shrink-0">
+          <ThemeToggle />
           <Link href="/login">
             <Button 
               variant="ghost" 
@@ -102,6 +104,9 @@ export default function Navbar() {
               Success Stories
             </button>
             <div className="pt-4 flex flex-col gap-2">
+              <div className="flex justify-start mb-2">
+                <ThemeToggle />
+              </div>
               <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
                 <Button variant="ghost" className="w-full justify-start hover:text-indigo-600 dark:hover:text-indigo-400">
                   Sign In
