@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-  swcMinify: true,
+  // ... your existing config ...
   webpack: (config, { isServer }) => {
     config.ignoreWarnings = [
       { module: /node_modules\/punycode/ }

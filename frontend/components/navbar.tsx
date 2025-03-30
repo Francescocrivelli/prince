@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { cn } from '@/utils/cn'
 import { Menu, X } from 'lucide-react'
 import { Button } from './ui/button'
 
