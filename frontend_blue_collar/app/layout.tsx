@@ -7,10 +7,11 @@ import { AuthProvider } from "@/contexts/AuthContext";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  description: "Join ",
-  keywords: ["pet tracking", "bunny tracking", "rabbit tracking", "pet management", "exclusive service"],
-  authors: [{ name: "Find My Bun Team" }],
-  creator: "Find My Bun Team",
+  title: "JobConnect - Voice Agent for Blue-Collar Workers",
+  description: "JobConnect Voice Agent helps blue-collar workers find jobs through phone calls and SMS, making job hunting accessible to everyone.",
+  keywords: ["blue-collar jobs", "job search", "construction jobs", "restaurant jobs", "voice agent", "job matching"],
+  authors: [{ name: "JobConnect Team" }],
+  creator: "JobConnect Team",
 };
 
 export default function RootLayout({
