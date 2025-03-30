@@ -56,36 +56,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .maybeSingle();
       
       if (error) {
-        console.error('Subscription check error:', error);
         setIsSubscriber(false);
         return;
       }
 
-      // console.log("AuthContext - subscription data: ", data)
-
       const isValid = data && 
         ['active', 'trialing'].includes(data.status) && 
         new Date(data.current_period_end) > new Date();
-      // console.log("AuthContext -  isValid: ", data)
 
       setIsSubscriber(!!isValid);
-      console.log("AuthContext -  set isSubscriber: ", isSubscriber)
     } catch (error) {
-      console.error('Subscription check error:', error);
       setIsSubscriber(false);
     }
   }, []);
 
   useEffect(() => {
     let mounted = true;
-    console.log("AuthContext - mounted useEffect:", mounted);
     
     const initializeAuth = async () => {
       try {
         setIsLoading(true);
-        console.log("AuthContext - Starting Try in InitializeAuth!");
 
-        // // First, get initial session
+        // First, get initial session
         const { data: { session }, error } = await supabase.auth.getSession();
         
         if (error || !mounted) {
@@ -127,7 +119,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           subscription.unsubscribe();
         };
       } catch (error) {
-        console.error("Auth initialization error:", error);
         if (mounted) setIsLoading(false);
       }
     };
@@ -141,12 +132,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     isLoading,
     supabase,
     signInWithGoogle: async () => {
-      await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`
-        }
-      });
+      console.log('Starting Google sign-in process');
+      try {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: {
+            redirectTo: `${window.location.origin}/auth/callback`
+          }
+        });
+        console.log('Supabase OAuth response:', { data, error });
+        if (error) throw error;
+      } catch (error) {
+        console.error('Error in signInWithGoogle:', error);
+        throw error;
+      }
     },
     signInWithEmail: async (email: string, password: string) => {
       const { data: authData, error: authError } = await supabase.auth.signInWithPassword({

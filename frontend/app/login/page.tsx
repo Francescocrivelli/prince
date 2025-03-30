@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { LoginForm } from '@/components/LoginForm';
 
 export default function LoginPage() {
-  const { user, signInWithGoogle, signInWithEmail, signUpWithEmail } = useAuth();
+  const { user, signInWithGoogle, signInWithEmail, signUpWithEmail, isLoading: authLoading } = useAuth();
   const router = useRouter();
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -18,6 +18,27 @@ export default function LoginPage() {
       setIsLoading(false);
     }
   }, [user, router]);
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-foreground">Loading auth...</div>
+      </div>
+    );
+  }
+
+  const handleGoogleSignIn = async () => {
+    try {
+      setError('');
+      setIsLoading(true);
+      await signInWithGoogle();
+    } catch (error) {
+      console.error('Error in handleGoogleSignIn:', error);
+      setError(error instanceof Error ? error.message : 'Google authentication failed');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleSubmit = async (email: string, password: string, isSignUp: boolean) => {
     setError('');
@@ -55,24 +76,17 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-accent/5">
-      <div className="w-full max-w-md px-4">
+    <div className="min-h-screen flex mt-20 justify-center bg-background px-4">
+      <div className="w-full max-w-md">
+        {/* <h1 className="text-4xl font-bold text-center mb-8 text-primary dark:text-white">
+          NextTemp
+        </h1> */}
         <LoginForm
           onSubmit={handleSubmit}
-          onGoogleSignIn={signInWithGoogle}
+          onGoogleSignIn={handleGoogleSignIn}
           isLoading={isLoading}
           error={error}
         />
-        <div className="mt-8 text-center text-sm text-gray-500 dark:text-gray-400">
-          By signing up, you agree to our{' '}
-          <a href="/terms" className="text-primary hover:text-primary-dark transition-colors">
-            Terms of Service
-          </a>{' '}
-          and{' '}
-          <a href="/privacy" className="text-primary hover:text-primary-dark transition-colors">
-            Privacy Policy
-          </a>
-        </div>
       </div>
     </div>
   );

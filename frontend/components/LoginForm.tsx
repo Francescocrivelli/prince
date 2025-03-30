@@ -31,14 +31,11 @@ export function LoginForm({
     <div className="w-full space-y-8 p-8 bg-surface-light dark:bg-surface-dark rounded-2xl shadow-subtle border border-gray-200 dark:border-gray-700">
       <div className="text-center">
         <div className="flex items-center justify-center gap-2 mb-6">
-          <span className="text-3xl">🤖</span>
+          <span className="text-3xl">🎬</span>
           <h2 className="text-2xl font-medium text-text dark:text-text-dark">
-            Prince AI
+            NextTemp
           </h2>
         </div>
-        <p className="text-sm text-gray-600 dark:text-gray-400">
-          Your AI-powered coding companion
-        </p>
       </div>
 
       {error && (
@@ -71,7 +68,7 @@ export function LoginForm({
 
       <div className="text-center">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-          {isSignUp ? 'Join Prince AI' : 'Welcome Back'}
+          {isSignUp ? 'Create an account' : 'Are you an Email User?'}
         </h2>
       </div>
 
