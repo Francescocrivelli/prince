@@ -3,7 +3,6 @@
 # import os
 
 
-
 # agent = Agent(name="Assistant", instructions="You are a helpful assistant")
 
 # result = Runner.run_sync(agent, "say hi to kaleb")
@@ -11,17 +10,18 @@
 
 
 from agents import Agent, Runner, function_tool
-import os
 from dotenv import load_dotenv
-
-
+from backend.app.config import Config
 
 
 # tool to process worker registration details
 load_dotenv()
 
-# Get OpenAI API key from environment variables
-openai_api_key = os.getenv("OPENAI_API_KEY")
+# get from the config file
+openai_api_key = Config.OPENAI_API_KEY
+elevenlabs_api_key = Config.ELEVENLABS_API_KEY
+elevenlabs_voice_id = Config.ELEVENLABS_VOICE_ID
+
 
 @function_tool
 def process_worker_registration(name: str, phone: str, location: str, language: str):
@@ -36,7 +36,7 @@ def process_worker_registration(name: str, phone: str, location: str, language: 
 
     # send confirmation message
 
-    return f"Worker registration successful for {name}."
+    return f"details are the following: {name}, {phone}, {location}, {language}"
 
 
 worker_registration_agent = Agent(
@@ -48,3 +48,13 @@ worker_registration_agent = Agent(
     ),
     tools=[process_worker_registration]
 )
+
+
+def main():
+    result = Runner.run_sync(worker_registration_agent,
+                             "My name is Kaleb Cole and I live in San Francisco, CA. I speak English and Spanish. My phone number is 123-456-7890.")
+    print(result.final_output)
+
+
+if __name__ == "__main__":
+    main()
