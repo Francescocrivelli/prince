@@ -55,17 +55,24 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex mt-20 justify-center bg-background px-4">
-      <div className="w-full max-w-md">
-        {/* <h1 className="text-4xl font-bold text-center mb-8 text-primary dark:text-white">
-          NextTemp
-        </h1> */}
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-accent/5">
+      <div className="w-full max-w-md px-4">
         <LoginForm
           onSubmit={handleSubmit}
           onGoogleSignIn={signInWithGoogle}
           isLoading={isLoading}
           error={error}
         />
+        <div className="mt-8 text-center text-sm text-gray-500 dark:text-gray-400">
+          By signing up, you agree to our{' '}
+          <a href="/terms" className="text-primary hover:text-primary-dark transition-colors">
+            Terms of Service
+          </a>{' '}
+          and{' '}
+          <a href="/privacy" className="text-primary hover:text-primary-dark transition-colors">
+            Privacy Policy
+          </a>
+        </div>
       </div>
     </div>
   );
