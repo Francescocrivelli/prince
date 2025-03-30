@@ -1,0 +1,14 @@
+README.md
+setup.py
+backend/__init__.py
+backend/app/__init__.py
+backend/app/config.py
+backend/app/main.py
+backend/app/voice_agent/__init__.py
+backend/app/voice_agent/agent.py
+backend/app/voice_agent/text_to_speech.py
+prince.egg-info/PKG-INFO
+prince.egg-info/SOURCES.txt
+prince.egg-info/dependency_links.txt
+prince.egg-info/requires.txt
+prince.egg-info/top_level.txt
