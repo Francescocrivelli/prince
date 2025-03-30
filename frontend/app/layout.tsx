@@ -7,8 +7,8 @@ import { AuthProvider } from "@/contexts/AuthContext";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  description: "Join ",
-  keywords: ["pet tracking", "bunny tracking", "rabbit tracking", "pet management", "exclusive service"],
+  description: "Join the exclusive community of students and blue collar workers to get discovered by tech startups and blue collar companies.",
+  keywords: [""],
   authors: [{ name: "Find My Bun Team" }],
   creator: "Find My Bun Team",
 };

@@ -54,7 +54,7 @@ export default function Home() {
                     JobConnect Voice Agent
                   </h1>
                   <p className="max-w-[600px] text-gray-600 dark:text-gray-300 text-lg">
-                    Find blue-collar jobs through phone calls and SMS without apps, forms, or internet. Perfect for construction, restaurants, cleaning, and more.
+                    Forget about JobBoards, let AI find you the best job tomorrow.
                   </p>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-3">
@@ -219,18 +219,18 @@ export default function Home() {
                 viewport={{ once: true }}
               >
                 <div className="inline-flex items-center rounded-full border px-3 py-1 text-sm font-medium bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-300 w-fit">
-                  Why Students Love Us
+                  Why Workers Love Us
                 </div>
-                <h2 className="text-3xl font-bold">Built for Students, by Students</h2>
+                <h2 className="text-3xl font-bold">Built for Workers, by Workers</h2>
                 <p className="text-gray-600 dark:text-gray-300">
-                  We understand the challenges students face when finding the right opportunities in fast-moving industries like AI and tech.
+                  We understand the challenges blue-collar workers face when finding reliable employment that values their skills.
                 </p>
                 <div className="space-y-4">
                   {[
-                    "Save time: One call, and we handle the rest — profile, matching, outreach.",
-                    "Cut through the noise: No more sending 50 applications with no response.",
-                    "Early access to AI startups: Get matched with early-stage companies before roles are even posted.",
-                    "Built for builders: If you've shipped a project or built something cool, we'll make sure it gets seen."
+                    "Save time: One call connects you directly to jobs that match your experience.",
+                    "Skip the paperwork: No more filling out complicated applications or building resumes.",
+                    "Local opportunities: Get matched with employers in your area who need your skills now.",
+                    "Daily pay options: Many positions offer same-day or weekly payment options."
                   ].map((item, i) => (
                     <div key={i} className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
@@ -239,10 +239,10 @@ export default function Home() {
                   ))}
                 </div>
                 <div className="pt-4">
-                  <Link href="https://docs.google.com/forms/d/1nK9EPoqgmn4q2mpD5Q53IZR29J3oAP1mOupAw292Oo4/edit" target="_blank">
+                  <Link href="tel:+18005551234">
                     <Button size="lg" className="group bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-600 dark:hover:bg-indigo-700 text-white">
-                      Apply Now
-                      <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                      Call Now
+                      <Phone className="ml-2 h-4 w-4" />
                     </Button>
                   </Link>
                 </div>
@@ -272,15 +272,20 @@ export default function Home() {
                           </span>
                         </div>
                         <div className="text-sm font-medium">
-                          {["Stanford", "Berkeley", "MIT", "CMU"][i]} Student
+                          {[
+                            "Javier M. (Construction)",
+                            "Miguel R. (Chipotle)",
+                            "Isabela G. (Amazon)",
+                            "Maria Q. (Medical Office)"
+                          ][i]}
                         </div>
                       </div>
                       <p className="text-sm text-gray-600 dark:text-gray-300">
                         {[
-                          "Got connected to 3 AI startups within a week. Already have 2 interviews lined up!",
-                          "The AI agent understood exactly what I was looking for. Saved me hours of job hunting.",
-                          "I was skeptical at first, but this platform actually works. Found an ML internship I love.",
-                          "Being part of this community helped me network with other builders in the AI space."
+                          "Found a construction job within 24 hours of calling. The pay is better than my last position and closer to home!",
+                          "After my hours were cut at Chipotle, I called and got connected to three restaurants looking for line cooks right away.",
+                          "I've been getting steady warehouse work at Amazon for 3 months now. They call me whenever they need extra hands.",
+                          "As a medical office secretary, I can now pick up receptionist work at different clinics when I need extra income."
                         ][i]}
                       </p>
                     </motion.div>
