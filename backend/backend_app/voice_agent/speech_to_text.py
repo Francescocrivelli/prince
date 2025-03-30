@@ -4,9 +4,9 @@ MAIN ISSUES:
 
 1. The audio buffer that is sent is too small.
 
-We are sending 
+We are sending audio data in chunks. There seems to be timing issues when sending the audio data. Idk what the root cause is.
 
-
+Try to go from the OpenAI API docs and build a new implementation from there instead of vibe code from chatgpt.
 
 """
 
