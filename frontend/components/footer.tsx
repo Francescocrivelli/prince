@@ -1,7 +1,6 @@
 import Link from 'next/link'
-import { Sparkles } from 'lucide-react'
 
-export default function Footer() {
+export function Footer() {
   return (
     <footer className="border-t border-solid border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950">
       <div className="container py-12 md:py-16">
