@@ -11,8 +11,7 @@ import { Suspense } from 'react';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import { StripeBuyButton } from '@/components/StripeBuyButton';
 import { useTrialStatus } from '@/hooks/useTrialStatus';
-// import { PricingSection } from '@/components/PricingSection';
-// import { StripeBuyButton } from '@/components/StripeBuyButton';
+import { CreditCard, User, Settings, Bell } from 'lucide-react';
 
 function ProfileContent() {
   const { user } = useAuth();
@@ -24,6 +23,7 @@ function ProfileContent() {
   const [isCancelling, setIsCancelling] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { isInTrial, trialEndTime } = useTrialStatus();
+  const [activeTab, setActiveTab] = useState('subscription');
 
   // Show payment success message if redirected from successful payment
   useEffect(() => {
@@ -38,7 +38,6 @@ function ProfileContent() {
     if (subscription?.stripe_subscription_id) {
       try {
         syncWithStripe(subscription.stripe_subscription_id);
-        console.log('Subscription synced with Stripe successfully');
       } catch (err: unknown) {
         console.error('Error syncing with Stripe:', err);
         setError('Unable to load subscription details');
@@ -56,7 +55,6 @@ function ProfileContent() {
     const attemptRefresh = async () => {
       if (refreshAttempts < MAX_REFRESH_ATTEMPTS) {
         refreshAttempts++;
-        console.log(`Attempting auto-refresh (${refreshAttempts}/${MAX_REFRESH_ATTEMPTS})`);
         await fetchSubscription();
         
         // If still loading, schedule next attempt
@@ -139,8 +137,8 @@ function ProfileContent() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-foreground mb-4 mx-auto"></div>
-          <p className="text-foreground">Redirecting to login...</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mb-4 mx-auto"></div>
+          <p>Redirecting to login...</p>
         </div>
       </div>
     );
@@ -154,124 +152,279 @@ function ProfileContent() {
         </div>
       }
     >
-      <div className="min-h-screen bg-surface-light dark:bg-surface-dark p-8 max-w-4xl mx-auto">
-        {paymentStatus === 'success' && (
-          <div className="mb-8 p-4 bg-green-50 dark:bg-green-900/30 rounded-lg">
-            <p className="text-green-600 dark:text-green-400">
-              🎉 Thank you for your subscription! Your payment was successful.
-            </p>
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 p-0">
+        {/* Header */}
+        <header className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 p-6">
+          <div className="max-w-7xl mx-auto flex items-center justify-between">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center">
+              <span className="mr-2">🐰</span>
+              Find My Bun
+            </h1>
+            <div className="flex items-center space-x-4">
+              <span className="text-sm text-slate-600 dark:text-slate-300">
+                {user.email}
+              </span>
+            </div>
           </div>
-        )}
-        
-        <h1 className="text-3xl font-bold mb-8">Profile</h1>
-        
-        <AccountManagement />
+        </header>
 
-        {/* Subscription Section */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-8">
-          <h2 className="text-xl font-semibold mb-4">Subscription Status</h2>
-          {error ? (
-            <div className="text-red-500 dark:text-red-400">{error}</div>
-          ) : isLoadingSubscription ? (
-            <div className="flex items-center space-x-2">
-              <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-              <span>Loading subscription details...</span>
-            </div>
-          ) : subscription ? (
-            <div className="space-y-2">
-              <p>
-                <span className="font-medium">Status:</span>{' '}
-                <span className={`${subscription.status === 'active' ? 'text-green-500' : 'text-yellow-500'}`}>
-                  {subscription.status.charAt(0).toUpperCase() + subscription.status.slice(1)}
-                </span>
+        {/* Main Content */}
+        <div className="max-w-7xl mx-auto p-6">
+          {paymentStatus === 'success' && (
+            <div className="mb-8 p-4 bg-green-50 dark:bg-green-900/30 rounded-lg border border-green-200 dark:border-green-800">
+              <p className="text-green-600 dark:text-green-400 flex items-center">
+                <span className="mr-2">🎉</span>
+                Thank you for your subscription! Your payment was successful.
               </p>
-              <p><span className="font-medium">Started:</span> {new Date(subscription.created_at).toLocaleDateString()}</p>
-              
-              {subscription.status === 'canceled' ? (
-                <div className="mt-4">
-                  <Link
-                    href="/pay"
-                    className="inline-block px-6 py-3 bg-primary hover:bg-primary-dark text-white rounded-full shadow-subtle hover:shadow-hover transition-all"
-                  >
-                    Resubscribe
-                  </Link>
-                </div>
-              ) : subscription.cancel_at_period_end ? (
-                <div className="mt-4 p-4 bg-yellow-50 dark:bg-yellow-900/30 rounded-lg">
-                  <p className="text-yellow-600 dark:text-yellow-400 mb-2">
-                    Your subscription will end on {new Date(subscription.current_period_end).toLocaleDateString()}
-                  </p>
-                  <button
-                    onClick={handleReactivateSubscription}
-                    className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg"
-                  >
-                    Resume Subscription
-                  </button>
-                </div>
-              ) : (subscription.status === 'active' || subscription.status === 'trialing') ? (
-                <button
-                  onClick={() => setIsCancelModalOpen(true)}
-                  className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg mt-4"
-                >
-                  Cancel Subscription
-                </button>
-              ) : null}
-            </div>
-          ) : (
-            <div className="mt-4 space-y-4">
-              {isInTrial ? (
-                <>
-                  <p className="text-yellow-600 dark:text-yellow-400">
-                    You are currently in your 48-hour trial period. Your trial will end on {' '}
-                    {trialEndTime ? new Date(trialEndTime).toLocaleDateString() : 'soon'}.
-                  </p>
-                  <p>Subscribe now to continue using the app after the trial ends.</p>
-                </>
-              ) : trialEndTime ? (
-                <>
-                  <div className="p-4 bg-red-50 dark:bg-red-900/30 rounded-lg mb-4">
-                    <p className="text-red-600 dark:text-red-400">
-                      Your trial period ended on {new Date(trialEndTime).toLocaleDateString()}.
-                    </p>
-                    <p className="mt-2">Subscribe now to regain access to the cooking experience.</p>
-                  </div>
-                </>
-              ) : (
-                <p>Subscribe to unlock the amazing cooking experience.</p>
-              )}
-              
-              <StripeBuyButton
-                buyButtonId={process.env.NEXT_PUBLIC_STRIPE_BUTTON_ID || ''}
-                publishableKey={process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || ''}
-              />
             </div>
           )}
+          
+          {/* Navigation Tabs */}
+          <div className="mb-8 border-b border-slate-200 dark:border-slate-700">
+            <nav className="flex space-x-8">
+              <button
+                onClick={() => setActiveTab('subscription')}
+                className={`py-4 px-1 font-medium text-sm border-b-2 ${
+                  activeTab === 'subscription'
+                    ? 'border-primary text-primary'
+                    : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+                }`}
+              >
+                <div className="flex items-center">
+                  <CreditCard className="w-4 h-4 mr-2" />
+                  Subscription
+                </div>
+              </button>
+              <button
+                onClick={() => setActiveTab('account')}
+                className={`py-4 px-1 font-medium text-sm border-b-2 ${
+                  activeTab === 'account'
+                    ? 'border-primary text-primary'
+                    : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+                }`}
+              >
+                <div className="flex items-center">
+                  <User className="w-4 h-4 mr-2" />
+                  Account
+                </div>
+              </button>
+              <button
+                onClick={() => setActiveTab('preferences')}
+                className={`py-4 px-1 font-medium text-sm border-b-2 ${
+                  activeTab === 'preferences'
+                    ? 'border-primary text-primary'
+                    : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+                }`}
+              >
+                <div className="flex items-center">
+                  <Settings className="w-4 h-4 mr-2" />
+                  Preferences
+                </div>
+              </button>
+            </nav>
+          </div>
+          
+          {/* Tab Content */}
+          <div className="space-y-6">
+            {activeTab === 'account' && (
+              <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+                <h2 className="text-xl font-semibold mb-6 text-slate-900 dark:text-white">
+                  Account Management
+                </h2>
+                <AccountManagement />
+              </div>
+            )}
+            
+            {activeTab === 'preferences' && (
+              <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+                <h2 className="text-xl font-semibold mb-6 text-slate-900 dark:text-white">
+                  User Preferences
+                </h2>
+                <p className="text-slate-600 dark:text-slate-400">
+                  Preference management features will be coming soon.
+                </p>
+              </div>
+            )}
+            
+            {activeTab === 'subscription' && (
+              <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+                <h2 className="text-xl font-semibold mb-6 flex items-center text-slate-900 dark:text-white">
+                  <CreditCard className="w-5 h-5 mr-2 text-primary" />
+                  Subscription Status
+                </h2>
+                
+                {error ? (
+                  <div className="text-red-500 dark:text-red-400 p-4 bg-red-50 dark:bg-red-900/20 rounded-lg">
+                    {error}
+                  </div>
+                ) : isLoadingSubscription ? (
+                  <div className="flex items-center space-x-2 p-4 bg-slate-50 dark:bg-slate-700/30 rounded-lg">
+                    <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                    <span className="text-slate-600 dark:text-slate-300">Loading subscription details...</span>
+                  </div>
+                ) : subscription ? (
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="bg-slate-50 dark:bg-slate-700/30 p-4 rounded-lg">
+                        <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">Status</p>
+                        <p className={`font-medium text-lg ${
+                          subscription.status === 'active' 
+                            ? 'text-green-500' 
+                            : subscription.status === 'trialing'
+                              ? 'text-blue-500'
+                              : 'text-yellow-500'
+                        }`}>
+                          {subscription.status.charAt(0).toUpperCase() + subscription.status.slice(1)}
+                        </p>
+                      </div>
+                      
+                      <div className="bg-slate-50 dark:bg-slate-700/30 p-4 rounded-lg">
+                        <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">Renewal Date</p>
+                        <p className="font-medium text-lg text-slate-900 dark:text-white">
+                          {new Date(subscription.current_period_end).toLocaleDateString()}
+                        </p>
+                      </div>
+                      
+                      <div className="bg-slate-50 dark:bg-slate-700/30 p-4 rounded-lg">
+                        <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">Start Date</p>
+                        <p className="font-medium text-lg text-slate-900 dark:text-white">
+                          {new Date(subscription.created_at).toLocaleDateString()}
+                        </p>
+                      </div>
+                      
+                      <div className="bg-slate-50 dark:bg-slate-700/30 p-4 rounded-lg">
+                        <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">Auto Renewal</p>
+                        <p className="font-medium text-lg text-slate-900 dark:text-white">
+                          {subscription.cancel_at_period_end ? 'Off' : 'On'}
+                        </p>
+                      </div>
+                    </div>
+                    
+                    {subscription.status === 'canceled' ? (
+                      <div className="mt-6">
+                        <Link
+                          href="/pay"
+                          className="inline-flex items-center justify-center px-6 py-3 bg-primary hover:bg-primary-dark text-white rounded-lg shadow-sm transition-all"
+                        >
+                          <CreditCard className="w-5 h-5 mr-2" />
+                          Resubscribe
+                        </Link>
+                      </div>
+                    ) : subscription.cancel_at_period_end ? (
+                      <div className="mt-6 p-4 bg-yellow-50 dark:bg-yellow-900/30 rounded-lg border border-yellow-200 dark:border-yellow-800">
+                        <p className="text-yellow-800 dark:text-yellow-200 mb-3">
+                          Your subscription will end on {new Date(subscription.current_period_end).toLocaleDateString()}
+                        </p>
+                        <button
+                          onClick={handleReactivateSubscription}
+                          className="inline-flex items-center justify-center px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg shadow-sm transition-all"
+                        >
+                          <Bell className="w-4 h-4 mr-2" />
+                          Reactivate Subscription
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="mt-6 flex flex-wrap gap-4">
+                        <button
+                          onClick={async () => {
+                            try {
+                              const response = await fetch('/api/stripe/portal', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ 
+                                  customerId: subscription.stripe_customer_id 
+                                }),
+                              });
+                              
+                              if (!response.ok) throw new Error('Failed to create portal session');
+                              
+                              const { url } = await response.json();
+                              window.location.href = url;
+                            } catch (error) {
+                              console.error('Error accessing customer portal:', error);
+                              setError('Failed to access subscription management');
+                            }
+                          }}
+                          className="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg shadow-sm transition-all flex items-center"
+                        >
+                          <Settings className="w-4 h-4 mr-2" />
+                          Manage Subscription
+                        </button>
+                        <button
+                          onClick={() => setIsCancelModalOpen(true)}
+                          className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg shadow-sm transition-all flex items-center"
+                        >
+                          <CreditCard className="w-4 h-4 mr-2" />
+                          Cancel Subscription
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="space-y-6">
+                    {isInTrial ? (
+                      <div className="p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-200 dark:border-blue-800 mb-6">
+                        <p className="text-blue-700 dark:text-blue-300 mb-2">
+                          <span className="font-medium">Trial Active:</span> You are currently in your 48-hour trial period.
+                        </p>
+                        <p className="text-blue-700 dark:text-blue-300">
+                          Your trial will end on {' '}
+                          {trialEndTime ? new Date(trialEndTime).toLocaleDateString() : 'soon'}. Subscribe now to continue using the app after the trial ends.
+                        </p>
+                      </div>
+                    ) : trialEndTime ? (
+                      <div className="p-4 bg-red-50 dark:bg-red-900/30 rounded-lg border border-red-200 dark:border-red-800 mb-6">
+                        <p className="text-red-700 dark:text-red-300 mb-2">
+                          <span className="font-medium">Trial Ended:</span> Your trial period ended on {new Date(trialEndTime).toLocaleDateString()}.
+                        </p>
+                        <p className="text-red-700 dark:text-red-300">
+                          Subscribe now to regain access to all features.
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="p-4 bg-primary/5 dark:bg-primary/10 rounded-lg mb-6">
+                        <p className="text-slate-700 dark:text-slate-300">
+                          Subscribe to unlock all the amazing features of Find My Bun.
+                        </p>
+                      </div>
+                    )}
+                    
+                    <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                      <h3 className="text-lg font-medium mb-4 text-slate-900 dark:text-white">
+                        Subscribe to Find My Bun
+                      </h3>
+                      <StripeBuyButton
+                        buyButtonId={process.env.NEXT_PUBLIC_STRIPE_BUTTON_ID || ''}
+                        publishableKey={process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || ''}
+                        className="w-full"
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
-
-        {/* Show pricing section if user doesn't have an active subscription */}
-        {/* {(!subscription || subscription.status === 'canceled') && (
-          <PricingSection showFullDetails={true} />
-        )} */}
 
         {/* Cancel Confirmation Modal */}
         {isCancelModalOpen && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full">
-              <h3 className="text-xl font-semibold mb-4">Cancel Subscription?</h3>
-              <p className="text-gray-600 dark:text-gray-300 mb-6">
+            <div className="bg-white dark:bg-slate-800 rounded-xl p-6 max-w-md w-full shadow-xl border border-slate-200 dark:border-slate-700">
+              <h3 className="text-xl font-semibold mb-4 text-slate-900 dark:text-white">Cancel Subscription?</h3>
+              <p className="text-slate-600 dark:text-slate-300 mb-6">
                 You&apos;ll continue to have access until the end of your billing period on {new Date(subscription?.current_period_end || '').toLocaleDateString()}. No refunds are provided for cancellations.
               </p>
               <div className="flex gap-4 justify-end">
                 <button
                   onClick={() => setIsCancelModalOpen(false)}
-                  className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+                  className="px-4 py-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors"
                   disabled={isCancelling}
                 >
                   Keep Subscription
                 </button>
                 <button
                   onClick={handleCancelSubscription}
-                  className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+                  className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
                   disabled={isCancelling}
                 >
                   {isCancelling ? (

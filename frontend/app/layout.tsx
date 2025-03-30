@@ -7,11 +7,11 @@ import { AuthProvider } from "@/contexts/AuthContext";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Prince - Exclusive AI Career Companion for Students",
-  description: "Prince is an exclusive community for talented students to connect with tech startups and get discovered. $7/month for direct connections to opportunities.",
-  keywords: ["student careers", "AI career companion", "tech startups", "job matching", "exclusive community"],
-  authors: [{ name: "Prince Team" }],
-  creator: "Prince Team",
+  title: "Find My Bun - Exclusive AI Pet Tracking Service",
+  description: "Find My Bun helps you track and manage information about your pet bunnies. An exclusive service for pet owners.",
+  keywords: ["pet tracking", "bunny tracking", "rabbit tracking", "pet management", "exclusive service"],
+  authors: [{ name: "Find My Bun Team" }],
+  creator: "Find My Bun Team",
 };
 
 export default function RootLayout({

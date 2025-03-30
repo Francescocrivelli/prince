@@ -1,31 +1,24 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
-import { supabase } from '@/utils/supabase';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: '2024-12-18.acacia',
+});
 
 export async function POST(request: Request) {
   try {
-    const { user_id } = await request.json();
+    const { customerId } = await request.json();
 
-    // Get the customer ID from Supabase
-    const { data: subscription } = await supabase
-      .from('subscriptions')
-      .select('stripe_customer_id')
-      .eq('user_id', user_id)
-      .single();
-
-    if (!subscription?.stripe_customer_id) {
+    if (!customerId) {
       return NextResponse.json(
-        { error: 'No subscription found' },
-        { status: 404 }
+        { error: 'Customer ID is required' },
+        { status: 400 }
       );
     }
 
-    // Create a portal session
     const session = await stripe.billingPortal.sessions.create({
-      customer: subscription.stripe_customer_id,
-      return_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard`,
+      customer: customerId,
+      return_url: `${process.env.NEXT_PUBLIC_APP_URL}/profile`,
     });
 
     return NextResponse.json({ url: session.url });

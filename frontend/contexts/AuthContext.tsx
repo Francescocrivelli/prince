@@ -56,16 +56,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .maybeSingle();
       
       if (error) {
+        console.error('Subscription check error:', error);
         setIsSubscriber(false);
         return;
       }
 
+      // console.log("AuthContext - subscription data: ", data)
+
       const isValid = data && 
         ['active', 'trialing'].includes(data.status) && 
         new Date(data.current_period_end) > new Date();
+      // console.log("AuthContext -  isValid: ", data)
 
       setIsSubscriber(!!isValid);
+      console.log("AuthContext -  set isSubscriber: ", isSubscriber)
     } catch (error) {
+      console.error('Subscription check error:', error);
       setIsSubscriber(false);
     }
   }, []);
@@ -111,7 +117,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           }
         );
 
-        // Only set loading to false after everything is initialized
         if (mounted) setIsLoading(false);
         
         return () => {
@@ -119,6 +124,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           subscription.unsubscribe();
         };
       } catch (error) {
+        console.error("Auth initialization error:", error);
         if (mounted) setIsLoading(false);
       }
     };
