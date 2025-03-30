@@ -1,7 +1,9 @@
 # embeddings.py
 import os
 from sentence_transformers import SentenceTransformer
-
+from backend_app.core import embeddings
+from backend_app.models import schemas
+from backend_app.main import app
 # Define a path to store/download the model manually
 MODEL_PATH = os.getenv("EMBEDDING_MODEL_PATH", "models/bge-small")
 # Load model (will load from local folder if exists)
