@@ -12,6 +12,7 @@ import LoadingSpinner from '@/components/LoadingSpinner';
 import { StripeBuyButton } from '@/components/StripeBuyButton';
 import { useTrialStatus } from '@/hooks/useTrialStatus';
 import { CreditCard, User, Settings, Bell } from 'lucide-react';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 
 function ProfileContent() {
   const { user } = useAuth();
@@ -161,6 +162,7 @@ function ProfileContent() {
               Find My Bun
             </h1>
             <div className="flex items-center space-x-4">
+              <ThemeToggle />
               <Link 
                 href="/" 
                 className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md mr-4 flex items-center"
