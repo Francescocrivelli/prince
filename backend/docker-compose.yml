@@ -2,6 +2,7 @@ version: "3.9"
 
 services:
 #SERVICE 1: BACKEND
+# Used For: FastAPI + agents + scripts
   backend:
     build: . #build the docker image aka the Backend
     ports:
@@ -21,6 +22,7 @@ services:
 # the chroma service does 
 # not need an explicit docker
 # file because it has it built in
+# USed for: Vector DB, HTTP only, runs as a black box
   chroma:
     image: ghcr.io/chroma-core/chroma:latest
     ports:
