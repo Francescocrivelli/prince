@@ -14,9 +14,9 @@ load_dotenv()
 # )
 
 # Use BGE-small model for embeddings
-embedding_function = embeddings.get_embedding
+embedding_function = embeddings.BGEEmbeddingFunction()
 
-chroma_client = chromadb.HttpClient(host="chroma", port=8001)
+chroma_client = chromadb.HttpClient(host="chroma", port=8000)
 
 students_collection = chroma_client.get_or_create_collection(
     name="students",

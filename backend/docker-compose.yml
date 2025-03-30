@@ -8,11 +8,14 @@ services:
     ports:
       - "8080:8000"  # Expose FastAPI on localhost:8080
     depends_on:
-      - chroma       # Ensure Chroma starts first
+      chroma:
+        condition: service_started  # Make sure Chroma is fully started
     env_file:
       - ../.env
     volumes:
-      - .:/app       # Mount local code (for hot reload/dev)
+      - .:/app   # Mount local code (for hot reload/dev)
+      - ../scripts:/app/scripts
+      - ../models:/app/models
     command: ["uvicorn", "backend_app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
     working_dir: /app
     environment:
@@ -29,6 +32,11 @@ services:
       - "8001:8000"   # Runs Chroma on port 8000 inside container, 8001 on host
     volumes:
       - chroma_data:/chroma/chroma
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/heartbeat"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 volumes:
   chroma_data:
