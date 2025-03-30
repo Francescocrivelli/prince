@@ -13,7 +13,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (user) {
-      router.replace('/dashboard');
+      router.replace('/profile');
     } else {
       setIsLoading(false);
     }
@@ -55,10 +55,10 @@ export default function LoginPage() {
           return;
         }
         
-        router.replace('/dashboard');
+        router.replace('/profile');
       } else {
         await signInWithEmail(email, password);
-        router.replace('/dashboard');
+        router.replace('/profile');
       }
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Authentication failed');
@@ -78,9 +78,10 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex mt-20 justify-center bg-background px-4">
       <div className="w-full max-w-md">
-        {/* <h1 className="text-4xl font-bold text-center mb-8 text-primary dark:text-white">
-          NextTemp
-        </h1> */}
+        <h1 className="text-4xl font-bold text-center mb-8 text-primary dark:text-white flex items-center justify-center">
+          <span className="mr-2">🐰</span>
+          Find My Bun
+        </h1>
         <LoginForm
           onSubmit={handleSubmit}
           onGoogleSignIn={handleGoogleSignIn}

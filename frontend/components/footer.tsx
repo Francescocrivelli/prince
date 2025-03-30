@@ -121,7 +121,7 @@ export default function Footer() {
         </div>
         <div className="mt-10 border-t border-solid border-gray-200 dark:border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            &copy; {new Date().getFullYear()} Prince. All rights reserved.
+            &copy; {new Date().getFullYear()} Find My Bun. All rights reserved.
           </p>
           <div className="flex items-center gap-6 mt-4 md:mt-0">
             <Link href="#" className="text-sm text-gray-500 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">

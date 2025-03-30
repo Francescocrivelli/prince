@@ -154,13 +154,19 @@ function ProfileContent() {
     >
       <div className="min-h-screen bg-slate-50 dark:bg-slate-900 p-0">
         {/* Header */}
-        <header className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 p-6">
+        <header className="bg-white dark:bg-[#0B1120] border-b border-slate-200 dark:border-slate-700 p-6">
           <div className="max-w-7xl mx-auto flex items-center justify-between">
             <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center">
               <span className="mr-2">🐰</span>
               Find My Bun
             </h1>
             <div className="flex items-center space-x-4">
+              <Link 
+                href="/" 
+                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md mr-4 flex items-center"
+              >
+                <span className="mr-1">👈</span> Go to Main Page
+              </Link>
               <span className="text-sm text-slate-600 dark:text-slate-300">
                 {user.email}
               </span>
@@ -227,7 +233,7 @@ function ProfileContent() {
           {/* Tab Content */}
           <div className="space-y-6">
             {activeTab === 'account' && (
-              <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+              <div className="bg-white dark:bg-[#0B1120] rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
                 <h2 className="text-xl font-semibold mb-6 text-slate-900 dark:text-white">
                   Account Management
                 </h2>
@@ -236,7 +242,7 @@ function ProfileContent() {
             )}
             
             {activeTab === 'preferences' && (
-              <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+              <div className="bg-white dark:bg-[#0B1120] rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
                 <h2 className="text-xl font-semibold mb-6 text-slate-900 dark:text-white">
                   User Preferences
                 </h2>
@@ -247,7 +253,7 @@ function ProfileContent() {
             )}
             
             {activeTab === 'subscription' && (
-              <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+              <div className="bg-white dark:bg-[#0B1120] rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
                 <h2 className="text-xl font-semibold mb-6 flex items-center text-slate-900 dark:text-white">
                   <CreditCard className="w-5 h-5 mr-2 text-primary" />
                   Subscription Status
@@ -389,7 +395,7 @@ function ProfileContent() {
                       </div>
                     )}
                     
-                    <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <div className="bg-white dark:bg-[#0B1120] p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
                       <h3 className="text-lg font-medium mb-4 text-slate-900 dark:text-white">
                         Subscribe to Find My Bun
                       </h3>

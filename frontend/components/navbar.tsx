@@ -33,28 +33,45 @@ export default function Navbar() {
     setIsMobileMenuOpen(!isMobileMenuOpen)
   }
 
+  const scrollToSection = (id: string) => {
+    setIsMobileMenuOpen(false)
+    const element = document.getElementById(id)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-solid border-gray-200 dark:border-gray-800 bg-white/90 dark:bg-gray-950/90 backdrop-blur-sm">
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-6">
           <Link href="/" className="flex items-center gap-2">
             <div className="h-8 w-8 rounded-md bg-indigo-600 dark:bg-indigo-500 flex items-center justify-center">
-              <Sparkles className="h-5 w-5 text-white" />
+              <span className="text-lg text-white">🐰</span>
             </div>
             <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-indigo-400 dark:to-violet-400">
-              Prince
+              Find My Bun
             </span>
           </Link>
           <div className="hidden md:flex items-center gap-6">
-            <Link href="/features" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+            <button
+              onClick={() => scrollToSection('features')}
+              className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+            >
               Features
-            </Link>
-            <Link href="/pricing" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+            </button>
+            <button
+              onClick={() => scrollToSection('pricing')}
+              className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+            >
               Pricing
-            </Link>
-            <Link href="#" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+            </button>
+            <button
+              onClick={() => scrollToSection('success-stories')}
+              className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+            >
               Success Stories
-            </Link>
+            </button>
           </div>
         </div>
 
@@ -62,7 +79,7 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-4">
             {isAuthenticated ? (
               <>
-                <Link href="/dashboard">
+                <Link href="/profile">
                   <Button variant="ghost" className="hover:text-indigo-600 dark:hover:text-indigo-400">Dashboard</Button>
                 </Link>
                 <Button 
@@ -115,31 +132,28 @@ export default function Navbar() {
         )}
       >
         <div className="container space-y-4 py-4">
-          <Link
-            href="/features"
-            className="block py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400"
-            onClick={() => setIsMobileMenuOpen(false)}
+          <button
+            onClick={() => scrollToSection('features')}
+            className="block w-full text-left py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400"
           >
             Features
-          </Link>
-          <Link
-            href="/pricing"
-            className="block py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400"
-            onClick={() => setIsMobileMenuOpen(false)}
+          </button>
+          <button
+            onClick={() => scrollToSection('pricing')}
+            className="block w-full text-left py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400"
           >
             Pricing
-          </Link>
-          <Link
-            href="#"
-            className="block py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400"
-            onClick={() => setIsMobileMenuOpen(false)}
+          </button>
+          <button
+            onClick={() => scrollToSection('success-stories')}
+            className="block w-full text-left py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400"
           >
             Success Stories
-          </Link>
+          </button>
           <div className="flex flex-col gap-2 pt-2">
             {isAuthenticated ? (
               <>
-                <Link href="/dashboard" onClick={() => setIsMobileMenuOpen(false)}>
+                <Link href="/profile" onClick={() => setIsMobileMenuOpen(false)}>
                   <Button variant="ghost" className="w-full justify-start hover:text-indigo-600 dark:hover:text-indigo-400">
                     Dashboard
                   </Button>
