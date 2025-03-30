@@ -28,7 +28,7 @@ jobs_collection = chroma_client.get_or_create_collection(
     embedding_function=embedding_function
 )
 
-#upsert = add or update
+#upsert = add or update (update  ake replace if uuid already exists)
 def upsert_student(student_id: str, document: str, metadata: dict):
     students_collection.upsert(
         ids=[student_id],
