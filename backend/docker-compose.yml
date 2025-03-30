@@ -1,8 +1,9 @@
 version: "3.9"
 
 services:
+#SERVICE 1: BACKEND
   backend:
-    build: .
+    build: . #build the docker image aka the Backend
     ports:
       - "8080:8000"  # Expose FastAPI on localhost:8080
     depends_on:
@@ -11,11 +12,15 @@ services:
       - ../.env
     volumes:
       - .:/app       # Mount local code (for hot reload/dev)
-    working_dir: /app/backend
-    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    command: ["uvicorn", "backend_app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+    working_dir: /app
     environment:
-      - PYTHONPATH=.
+      - PYTHONPATH=/app
 
+#SERVICE 2: CHROMA
+# the chroma service does 
+# not need an explicit docker
+# file because it has it built in
   chroma:
     image: ghcr.io/chroma-core/chroma:latest
     ports:

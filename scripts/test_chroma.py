@@ -1,6 +1,7 @@
 # scripts/test_chroma_student.py
 
-from app.core import database
+from backend_app.core import database
+
 
 # Use a fixed fake student ID
 STUDENT_ID = "test-student-001"

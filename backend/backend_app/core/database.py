@@ -3,7 +3,9 @@ import chromadb
 from chromadb.utils import embedding_functions
 from dotenv import load_dotenv
 import os
-from app.core import embeddings
+from backend_app.core import embeddings
+from backend_app.models import schemas
+from backend_app.main import app
 
 load_dotenv()
 # openai_embed = embedding_functions.OpenAIEmbeddingFunction(
