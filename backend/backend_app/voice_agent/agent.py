@@ -1,17 +1,11 @@
-# from agents import Agent, Runner
-# from dotenv import load_dotenv
-# import os
-
-
-# agent = Agent(name="Assistant", instructions="You are a helpful assistant")
-
-# result = Runner.run_sync(agent, "say hi to kaleb")
-# print(result.final_output)
-
-
+import asyncio
 from agents import Agent, Runner, function_tool
 from dotenv import load_dotenv
 from backend.app.config import Config
+from backend.app.voice_agent.text_to_speech import TextToSpeech
+import simpleaudio as sa
+import numpy as np
+import io
 
 
 # tool to process worker registration details
@@ -49,12 +43,26 @@ worker_registration_agent = Agent(
     tools=[process_worker_registration]
 )
 
+# make tts object
+tts = TextToSpeech()
 
-def main():
-    result = Runner.run_sync(worker_registration_agent,
-                             "My name is Kaleb Cole and I live in San Francisco, CA. I speak English and Spanish. My phone number is 123-456-7890.")
+
+def play_audio_from_pcm(audio_bytes: bytes, sample_rate: int = 22050):
+    # Convert byte stream to numpy int16 array
+    audio_np = np.frombuffer(audio_bytes, dtype=np.int16)
+
+    # Play raw PCM buffer
+    play_obj = sa.play_buffer(
+        audio_np, 1, 2, sample_rate)  # mono, 2 bytes/sample
+    play_obj.wait_done()
+
+
+async def main():
+    result = await Runner.run(worker_registration_agent,
+                              "My name is Kaleb Cole and I live in San Francisco, CA. I speak English and Spanish. My phone number is 123-456-7890.")
     print(result.final_output)
-
+    output_audio = await tts.synthesize(result.final_output)
+    play_audio_from_pcm(output_audio)
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

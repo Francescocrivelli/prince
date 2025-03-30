@@ -1,3 +1,6 @@
+# TODO: LOGGING FOR HOW MUCH A USER IS SPENDING
+# TODO: Logging for how many tokens are used
+# TODO: Logging for how many requests are made
 import os
 from typing import Optional
 from backend.app.config import Config
@@ -42,8 +45,8 @@ class TextToSpeech:
             bytes: Audio data
 
         Raises:
-            ValueError: If the input text is empty or too long
-            TextToSpeechError: If the text-to-speech conversion fails
+            ValueError: If text is empty or exceeds maximum length
+            Exception: If text-to-speech conversion fails
         """
         if not text.strip():
             raise ValueError("Input text cannot be empty")
@@ -61,6 +64,7 @@ class TextToSpeech:
                         stability=0.5, similarity_boost=0.5),
                 ),
                 model=Config.TTS_MODEL_NAME,
+                output_format="pcm_22050"  # TODO: see how much latency this introduces
             )
 
             # Convert generator to bytes
