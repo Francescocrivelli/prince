@@ -7,5 +7,7 @@ MODEL_PATH = os.getenv("EMBEDDING_MODEL_PATH", "models/bge-small")
 # Load model (will load from local folder if exists)
 model = SentenceTransformer(MODEL_PATH)
 
-def get_embedding(text: str):
-    return model.encode(text, normalize_embeddings=True)
+def get_embedding(texts: list[str]) -> list[list[float]]:
+    if isinstance(texts, str):
+        texts = [texts]
+    return model.encode(texts, normalize_embeddings=True).tolist()
