@@ -3,6 +3,9 @@
 .env
 
 
+backend/models/bge-small/
+
+
 # Ignore local model weights
 models/bge-small/
 

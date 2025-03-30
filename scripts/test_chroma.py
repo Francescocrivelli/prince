@@ -12,7 +12,7 @@ metadata = {
     "name": "Test User",
     "school": "Stanford",
     "grad_year": 2025,
-    "skills": ["LLMs", "robotics"],
+    "skills": "LLMs, robotics",
     "interested_in": "early-stage AI startups"
 }
 
