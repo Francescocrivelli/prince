@@ -4,18 +4,22 @@ services:
   backend:
     build: .
     ports:
-      - "8080:8000"
+      - "8080:8000"  # Expose FastAPI on localhost:8080
     depends_on:
-      - chroma
+      - chroma       # Ensure Chroma starts first
     env_file:
       - ../.env
     volumes:
-      - .:/app
+      - .:/app       # Mount local code (for hot reload/dev)
+    working_dir: /app/backend
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    environment:
+      - PYTHONPATH=.
 
   chroma:
     image: ghcr.io/chroma-core/chroma:latest
     ports:
-      - "8000:8000"
+      - "8001:8000"   # Runs Chroma on port 8000 inside container, 8001 on host
     volumes:
       - chroma_data:/chroma/chroma
 
