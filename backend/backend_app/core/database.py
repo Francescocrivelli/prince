@@ -42,3 +42,4 @@ def query_jobs(student_profile: str, n_results=5):
         query_texts=[student_profile],
         n_results=n_results
     )
+

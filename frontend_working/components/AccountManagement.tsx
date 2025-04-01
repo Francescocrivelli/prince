@@ -53,11 +53,19 @@ export function AccountManagement() {
         {!isOAuthUser && (
           <button
             onClick={() => router.push(`/reset-password?email=${encodeURIComponent(user?.email || '')}`)}
-            className="block w-full text-left px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600"
+            className="block w-full text-left px-4 py-2 mb-3 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600"
           >
             Reset Password
           </button>
         )}
+
+        <button
+          onClick={signOut}
+          className="block w-full text-left px-4 py-2 mb-3 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-200 dark:hover:bg-red-900/50 flex items-center"
+        >
+          <span className="mr-2">👋</span>
+          Sign Out
+        </button>
 
         {/* <button
           onClick={() => setIsDeleteModalOpen(true)}

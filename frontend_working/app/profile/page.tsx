@@ -15,7 +15,7 @@ import { CreditCard, User, Settings, Bell } from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 
 function ProfileContent() {
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const { subscription, isLoading: isLoadingSubscription, syncWithStripe, fetchSubscription } = useSubscription();
   const router = useRouter();
   const searchParams = useSearchParams();
