@@ -117,11 +117,14 @@ class RealTimeSpeechToText:
                 f"Failed to connect: Invalid status code {e.status_code}")
             self.connected = False
             raise
-        except websockets.exceptions.ConnectionClosed as e:
-            logger.error(
-                f"Failed to connect: Connection closed unexpectedly - {str(e)}")
+        except websockets.ConnectionClosedOK:
+            logger.info("WebSocket closed cleanly (1000 OK)")
             self.connected = False
-            raise
+            self.session_id = None
+        except websockets.ConnectionClosedError as e:
+            logger.error(f"WebSocket closed unexpectedly: {e}")
+            self.connected = False
+            self.session_id = None
         except Exception as e:
             logger.error(
                 f"Failed to connect: {str(e)}\n{traceback.format_exc()}")

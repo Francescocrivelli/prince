@@ -2,8 +2,9 @@
 # TODO: Logging for how many tokens are used
 # TODO: Logging for how many requests are made
 import os
+from typing import AsyncIterator
 from typing import Optional
-from backend.app.config import Config
+from backend.backend_app.config import Config
 
 
 from elevenlabs import ElevenLabs, Voice, VoiceSettings
@@ -27,6 +28,12 @@ class TextToSpeech:
         if missing_vars:
             raise ValueError(
                 f"Missing required environment variables: {', '.join(missing_vars)}")
+
+    async def run(self, text: str, settings) -> AsyncIterator[bytes]:
+        """Run the text-to-speech pipeline."""
+        audio_bytes = await self.synthesize(text)
+        # yields into one chunk
+        yield audio_bytes
 
     @property
     def client(self) -> ElevenLabs:
