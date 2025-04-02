@@ -1,3 +1,5 @@
+# scripts/download_bge_model.py
+
 from sentence_transformers import SentenceTransformer
 
 print("🔻 Downloading BGE-small to ./models/bge-small")

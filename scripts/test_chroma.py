@@ -1,4 +1,4 @@
-# scripts/test_chroma_student.py
+# scripts/test_chroma.py
 
 from backend_app.core import database
 
