@@ -154,6 +154,8 @@ async function createCall(userPhone, instruction) {
   }
 }
 
+// funct
+
 // ================== /api/incoming-call ===================
 fastify.all('/api/incoming-call', async (request, reply) => {
   try {
@@ -184,11 +186,11 @@ fastify.register(async (fastify) => {
   fastify.get('/api/media-stream/:callDT', { websocket: true }, (connection, req) => {
       console.log('Client connected');
 
-      let streamSid = null;
-      let latestMediaTimestamp = 0;
-      let lastAssistantItem = null;
-      let markQueue = [];
-      let responseStartTimestampTwilio = null;
+      let streamSid = null; // Twilio stream SID
+      let latestMediaTimestamp = 0; // Latest media timestamp
+      let lastAssistantItem = null; // last ai response item id
+      let markQueue = []; // Tracks synchronization points in the audio stream. Used to manage turn-taking between user and AI
+      let responseStartTimestampTwilio = null; // Response start timestamp
 
       // Retrieve the param from the route
       let { callDT } = req.params;
@@ -213,7 +215,7 @@ fastify.register(async (fastify) => {
           }
         }
       );
-
+      // creates a marker in the audio stream to indicate the start of a new response
       const sendMark = (connection, streamSid) => {
         if (streamSid) {
             const markEvent = {
@@ -228,6 +230,7 @@ fastify.register(async (fastify) => {
 
 
       const handleSpeechStartedEvent = () => {
+        // if there is a mark in the queue and a response start timestamp, send a truncate event
         if (markQueue.length > 0 && responseStartTimestampTwilio != null) {
             const elapsedTime = latestMediaTimestamp - responseStartTimestampTwilio;
             
@@ -256,7 +259,7 @@ fastify.register(async (fastify) => {
             responseStartTimestampTwilio = null;
         }
       };
-
+      // NOT NEEDED FOR VOICEPIPELINE
       const sendSessionUpdate = () => {
         const sessionUpdate = {
           event_id: "event_123",
@@ -305,8 +308,9 @@ fastify.register(async (fastify) => {
       // OpenAI WebSocket opened
       openAiWs.on('open', async () => {
         console.log('Connected to the OpenAI Realtime API');
+        // send session update to OpenAI
         setTimeout(sendSessionUpdate, 250);
-        //console.log(instruction);
+        // send initial conversation item to OpenAI
         setTimeout(sendInitialConversationItem, 250);
       });
 

@@ -52,12 +52,6 @@ def twilio_audio_to_input(audio_data: np.ndarray, sample_rate: int = 8000) -> Au
     )
 
 
-def play_audio(audio_data: np.ndarray, sample_rate: int = 8000):
-    """Play audio using sounddevice."""
-    sd.play(audio_data, sample_rate)
-    sd.wait()  # Wait until playback is finished
-
-
 def save_audio_to_file(audio_data: np.ndarray, output_path: str, sample_rate: int = 8000):
     """Save audio data to a WAV file."""
     # Convert back to float32 for soundfile
