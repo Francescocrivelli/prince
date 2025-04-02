@@ -4,7 +4,7 @@ from typing import Optional, List
 from datetime import datetime
 
 class ChromaStudentMetadata(BaseModel):
-    user_id: str  # UUID from Supabase
+    user_id: str  #phone number
     full_name: Optional[str]
     university: Optional[str]
     major: Optional[str]
