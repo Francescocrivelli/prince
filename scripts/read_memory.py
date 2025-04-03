@@ -23,10 +23,7 @@ print("CHROMA_PORT:", os.environ.get("CHROMA_PORT"))
 print("Python Path:", sys.path)
 
 try:
-    print("\n🚀 Importing tiktoken module...")
-    enc = tiktoken.encoding_for_model("gpt-4")
-    print("🔍 Encoding length for YOUR_TEXT_HERE:", len(enc.encode("YOUR_TEXT_HERE")))
-
+   
     print("\n📡 Importing database module...")
     from backend_app.core.database import get_student_by_phone
 
@@ -38,6 +35,11 @@ try:
         print("🧠 User:", data["metadatas"][0].get("full_name", "N/A"))
         print("📞 Phone:", data["metadatas"][0].get("user_id", "N/A"))
         print("📝 Memory:\n", data["documents"][0])
+
+        print("\n🚀 Importing tiktoken module...")
+        enc = tiktoken.encoding_for_model("gpt-4")
+        print("🔍 Encoding length for YOUR_TEXT_HERE:", len(enc.encode(data["documents"][0])))
+
 
     if __name__ == "__main__":
         phone = input("Enter phone number (e.g. +18667398151): ")
