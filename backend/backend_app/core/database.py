@@ -1,11 +1,10 @@
 # database.py
-import chromadb
-from chromadb.utils import embedding_functions
+import re
 from dotenv import load_dotenv
 import os
+import chromadb
+from chromadb.utils import embedding_functions
 from backend_app.core import embeddings
-from backend_app.models import schemas
-from backend_app.main import app
 
 load_dotenv()
 # openai_embed = embedding_functions.OpenAIEmbeddingFunction(
@@ -13,10 +12,20 @@ load_dotenv()
 #     model_name="text-embedding-3-small"
 # )
 
+# In Docker, use the service name 'chroma' as host, otherwise use 'localhost'
+CHROMA_HOST = os.environ.get("CHROMA_HOST", "chroma")  # Default to 'chroma' for Docker
+CHROMA_PORT = int(os.environ.get("CHROMA_PORT", "8000"))  # Use port 8000 inside Docker
+
+print("🔄 Initializing ChromaDB with:", CHROMA_HOST, CHROMA_PORT)  # Debug line
+
 # Use BGE-small model for embeddings
 embedding_function = embeddings.BGEEmbeddingFunction()
 
-chroma_client = chromadb.HttpClient(host="chroma", port=8000)
+# chroma_client = chromadb.HttpClient(host="chroma", port=8000)
+chroma_client = chromadb.HttpClient(
+    host=CHROMA_HOST,
+    port=CHROMA_PORT
+)
 
 students_collection = chroma_client.get_or_create_collection(
     name="students",
@@ -53,7 +62,7 @@ def query_best_match(student_profile: str, n_results=1):
 
 
 #create a that updates the user profile in chroma without deleting the existing profile
-def update_user_profile_by_id(user_id: str, user_profile: schemas.UserProfile):
+def update_user_profile_by_id(user_id: str, user_profile: dict):
     students_collection.update(
         ids=[user_id],
         documents=[user_profile.model_dump_json()],
@@ -95,11 +104,14 @@ def get_student_by_phone(phone_number: str):
 def create_student_with_phone(phone_number: str, full_name: str = None):
     metadata = {
         "user_id": phone_number,
-        "full_name": full_name
     }
+
+    if full_name is not None:
+        metadata["full_name"] = full_name
+
     students_collection.upsert(
         ids=[phone_number],
-        documents=[str(metadata)],  # Initial empty document
+        documents=[""],  # Start with empty memory
         metadatas=[metadata]
     )
     return metadata
@@ -116,19 +128,47 @@ def find_student_by_name_query(name_query: str, n_results: int = 1):
 #update conversation history in document
 def update_conversation_history(phone_number: str, conversation_text: str):
     existing = get_student_by_phone(phone_number)
-    if existing and existing['documents']:
-        # Append new conversation to existing document
-        current_doc = existing['documents'][0]
-        updated_doc = current_doc + "\n--- New Conversation ---\n" + conversation_text
-    else:
-        updated_doc = conversation_text
-    
+
+    current_doc = ""
+    metadata = {"user_id": phone_number}
+
+    if existing:
+        if existing.get('documents') and existing['documents'][0]:
+            current_doc = existing['documents'][0]
+        if existing.get('metadatas') and existing['metadatas'][0]:
+            metadata = existing['metadatas'][0]
+
+    # Append extracted facts with a newline
+    updated_doc = (current_doc + "\n" + conversation_text).strip()
+
     students_collection.upsert(
         ids=[phone_number],
         documents=[updated_doc],
-        metadatas=[existing['metadatas'][0]] if existing and existing['metadatas'] else [{"user_id": phone_number}]
+        metadatas=[metadata]
     )
 
 
+#update full name helper
 
 
+def maybe_update_full_name(phone_number: str, extracted_text: str):
+    # Try to find a "My name is..." line
+    match = re.search(r"(?:my name is|i(?:'| a)?m)\s+([A-Z][a-z]+(?:\s[A-Z][a-z]+)?)", extracted_text, re.IGNORECASE)
+    if not match:
+        return
+
+    full_name = match.group(1).strip()
+
+    # Fetch current profile
+    profile = get_student_by_phone(phone_number)
+    if profile and profile.get("metadatas") and profile["metadatas"][0]:
+        metadata = profile["metadatas"][0]
+        if not metadata.get("full_name"):
+            metadata["full_name"] = full_name
+            # Keep document as is
+            document = profile["documents"][0] if profile.get("documents") else ""
+            students_collection.upsert(
+                ids=[phone_number],
+                documents=[document],
+                metadatas=[metadata]
+            )

@@ -20,6 +20,8 @@ services:
     working_dir: /app
     environment:
       - PYTHONPATH=/app
+      - CHROMA_HOST=chroma  # Override for Docker environment
+      - CHROMA_PORT=8000   # Override for Docker environment
 
 #SERVICE 2: CHROMA
 # the chroma service does 
