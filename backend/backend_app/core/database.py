@@ -1,5 +1,4 @@
 # database.py
-import re
 from dotenv import load_dotenv
 import os
 import chromadb
@@ -148,27 +147,18 @@ def update_conversation_history(phone_number: str, conversation_text: str):
     )
 
 
-#update full name helper
 
+def update_full_name(phone_number: str, full_name: str):
+    existing = get_student_by_phone(phone_number)
+    metadata = {"user_id": phone_number, "full_name": full_name}
 
-def maybe_update_full_name(phone_number: str, extracted_text: str):
-    # Try to find a "My name is..." line
-    match = re.search(r"(?:my name is|i(?:'| a)?m)\s+([A-Z][a-z]+(?:\s[A-Z][a-z]+)?)", extracted_text, re.IGNORECASE)
-    if not match:
-        return
+    if existing and existing.get("metadatas"):
+        existing_metadata = existing["metadatas"][0]
+        metadata.update(existing_metadata)
+        metadata["full_name"] = full_name
 
-    full_name = match.group(1).strip()
-
-    # Fetch current profile
-    profile = get_student_by_phone(phone_number)
-    if profile and profile.get("metadatas") and profile["metadatas"][0]:
-        metadata = profile["metadatas"][0]
-        if not metadata.get("full_name"):
-            metadata["full_name"] = full_name
-            # Keep document as is
-            document = profile["documents"][0] if profile.get("documents") else ""
-            students_collection.upsert(
-                ids=[phone_number],
-                documents=[document],
-                metadatas=[metadata]
-            )
+    students_collection.upsert(
+        ids=[phone_number],
+        documents=existing.get("documents", [""]),
+        metadatas=[metadata]
+    )
