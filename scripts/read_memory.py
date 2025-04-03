@@ -3,6 +3,7 @@ import os
 import sys
 from pathlib import Path
 from dotenv import load_dotenv
+import tiktoken
 
 # Add the backend directory to the Python path
 backend_dir = str(Path(__file__).parent.parent / "backend")
@@ -22,6 +23,10 @@ print("CHROMA_PORT:", os.environ.get("CHROMA_PORT"))
 print("Python Path:", sys.path)
 
 try:
+    print("\n🚀 Importing tiktoken module...")
+    enc = tiktoken.encoding_for_model("gpt-4")
+    print("🔍 Encoding length for YOUR_TEXT_HERE:", len(enc.encode("YOUR_TEXT_HERE")))
+
     print("\n📡 Importing database module...")
     from backend_app.core.database import get_student_by_phone
 
