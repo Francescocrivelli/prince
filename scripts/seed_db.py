@@ -48,7 +48,7 @@ PROFILES = [
         "phone": "+14155551003",
         "full_name": "Emily Zhang",
         "document": """
-- Research Scientist at Anthropic working on AI alignment
+- Research Scientist at  Anthropic working on AI alignment
 - MIT CS graduate, published at NeurIPS, ICML, and ICLR
 - Built open-source LLM framework used by 100k+ developers
 - Interested in: AI safety, interpretability research, and education
