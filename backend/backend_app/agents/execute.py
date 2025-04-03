@@ -1,13 +1,18 @@
 # backend_app/agents/execute.py
 
 import json
-from backend_app.core.database import update_full_name
+from backend_app.core.database import update_full_name, query_by_prompt
 
 function_registry = {
     "update_user_name": lambda args: update_full_name(
         args.get("phone_number", ""),
         args.get("full_name", "")
     ),
+    "query_by_prompt": lambda args: query_by_prompt(
+        args.get("prompt", ""),
+        exclude_user_id=args.get("phone_number")
+    )   
+
 
     # Add more functions here in the future
 }

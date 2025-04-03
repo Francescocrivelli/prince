@@ -19,5 +19,20 @@ function_definitions: List[Dict] = [
             },
             "required": ["full_name", "phone_number"]
         }
+    },
+    {
+        "name": "query_by_prompt",
+        "description": "Query the user's profile based on a prompt",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "prompt": {
+                    "type": "string",
+                    "description": "The prompt to query the user's profile"
+                }
+            },
+            "required": ["prompt", "phone_number"]
+        }
+        
     }
 ]

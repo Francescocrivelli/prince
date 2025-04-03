@@ -1,4 +1,5 @@
 # scripts/read_memory.py
+#this script is used to read the memory of a user
 import os
 import sys
 from pathlib import Path

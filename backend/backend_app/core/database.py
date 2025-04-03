@@ -44,6 +44,27 @@ def upsert_student(student_id: str, document: str, metadata: dict):
         metadatas=[metadata]
     )
 
+#query via promp excluding the user's profile
+def query_by_prompt(prompt: str, exclude_user_id: str = None, n_results=5):
+    results = students_collection.query(
+        query_texts=[prompt],
+        n_results=n_results + 1  # get extra to filter
+    )
+
+    # Filter out the current user by ID if needed
+    if exclude_user_id:
+        filtered = []
+        for i, student_id in enumerate(results["ids"]):
+            if student_id != exclude_user_id:
+                filtered.append({
+                    "id": student_id,
+                    "document": results["documents"][i],
+                    "metadata": results["metadatas"][i]
+                })
+        return filtered[:n_results]
+
+    return results
+
 #query = search
 def query_jobs(student_profile: str, n_results=5):
     return jobs_collection.query(

@@ -1,3 +1,5 @@
+# scripts/visualize_collection.py
+#this script is used to visualize the collection in the terminal
 import chromadb
 from rich.console import Console
 from rich.table import Table
