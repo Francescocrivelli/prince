@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
 #SERVICE 1: BACKEND
 # Used For: FastAPI + agents + scripts

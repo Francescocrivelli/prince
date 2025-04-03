@@ -12,8 +12,8 @@ load_dotenv()
 # )
 
 # In Docker, use the service name 'chroma' as host, otherwise use 'localhost'
-CHROMA_HOST = os.environ.get("CHROMA_HOST", "chroma")  # Default to 'chroma' for Docker
-CHROMA_PORT = int(os.environ.get("CHROMA_PORT", "8000"))  # Use port 8000 inside Docker
+CHROMA_HOST = os.environ.get("CHROMA_HOST", "localhost")  # Default to 'localhost' for local dev
+CHROMA_PORT = int(os.environ.get("CHROMA_PORT", "8001"))  # Use port 8001 for local dev to match docker-compose
 
 print("🔄 Initializing ChromaDB with:", CHROMA_HOST, CHROMA_PORT)  # Debug line
 

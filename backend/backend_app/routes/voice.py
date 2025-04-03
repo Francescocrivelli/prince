@@ -98,24 +98,79 @@ async def voice_webhook(request: Request):
             # the functions 
             if func_name == "update_user_name": #if the function is to update the user's name
                 full_name = args.get("full_name", "")
-                if full_name:
+                if full_name and not metadata.get("full_name"):  # Only update if name not already set
                     update_full_name(phone_number, full_name)
+                    print(f"[✅] Updated name to: {full_name}")
                 else:
-                    print("[❌] Full name missing in function call args.")
+                    print("[ℹ️] Name already set or missing in args")
 
             if func_name == "query_by_prompt":
                 prompt = args.get("prompt", "")
                 if prompt:
                     matches = query_by_prompt(prompt, exclude_user_id=phone_number)
-                    if matches:
-                        match = matches[0]  # match is a dict with id, document, metadata
-                        metadata = match['metadata']
-                        if isinstance(metadata, list) and metadata:
-                            metadata = metadata[0]
-                        full_name = metadata.get('full_name', 'a peer')
-                        print(f"[✅] Match found: {full_name}")
-                        gpt_reply = f"I found someone you might connect with: {full_name}."
+                    print(f"[🔍] Query results: {json.dumps(matches, indent=2)}")  # Debug log
+                    
+                    if matches and len(matches) > 0:
+                        # Get the first (and only) result object
+                        result = matches[0]
+                        
+                        # Format results for better LLM interpretation
+                        formatted_results = []
+                        for i in range(len(result["id"])):
+                            if result["id"][i] != phone_number:  # Skip current user
+                                formatted_results.append({
+                                    "id": result["id"][i],
+                                    "document": result["document"][i],
+                                    "metadata": result["metadata"][i]
+                                })
+                        
+                        # Let GPT interpret the results with more specific instructions
+                        interpretation_response = openai.ChatCompletion.create(
+                            model="gpt-4",
+                            messages=[
+                                {
+                                    "role": "system",
+                                    "content": (
+                                        "You are helping to match users based on their profiles. "
+                                        "Given the search results and the user's specific request, find the MOST RELEVANT match. "
+                                        "Pay special attention to educational background, work experience, and specific institutions mentioned. "
+                                        "Prioritize exact matches for institutions and fields mentioned in the user's request. "
+                                        "Return ONLY the full name of the best match, or empty string if no good match found."
+                                    )
+                                },
+                                {
+                                    "role": "user",
+                                    "content": (
+                                        f"User request: {prompt}\n\n"
+                                        f"Search results: {json.dumps(formatted_results, indent=2)}"
+                                    )
+                                }
+                            ]
+                        )
+                        
+                        matched_name = interpretation_response.choices[0].message.content.strip()
+                        print(f"[🤖] LLM interpreted match: {matched_name}")
+                        
+                        if matched_name and matched_name != "":
+                            # Find the matched person's document to include relevant details
+                            matched_doc = None
+                            for i, metadata in enumerate(result["metadata"]):
+                                if metadata.get("full_name") == matched_name:
+                                    matched_doc = result["document"][i]
+                                    break
+                            
+                            print(f"[✅] Match found: {matched_name}")
+                            if matched_doc:
+                                # Extract first line of their background for context
+                                background = matched_doc.strip().split('\n')[0].replace('- ', '')
+                                gpt_reply = f"I found someone you might connect with: {matched_name}, who is {background.lower()}"
+                            else:
+                                gpt_reply = f"I found someone you might connect with: {matched_name}."
+                        else:
+                            print("[❌] No valid matches found")
+                            gpt_reply = "I looked around but couldn't find someone matching your specific criteria just yet."
                     else:
+                        print("[❌] No matches returned from search")
                         gpt_reply = "I looked around but couldn't find someone just yet."
                 else:
                     print("[❌] Prompt missing in function call args.")
