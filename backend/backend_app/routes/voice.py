@@ -6,6 +6,7 @@ from backend_app.core.database import (
     get_student_by_phone,
     create_student_with_phone,
     update_conversation_history,
+    update_full_name
 )
 from backend_app.agents.functions import function_definitions
 from backend_app.agents.execute import execute_function
@@ -53,7 +54,7 @@ async def voice_webhook(request: Request):
             {
                 "role": "system",
                 "content": (
-                    "Extract important user information (e.g. full name, preferences, goals, identity). "
+                    "Extract user information (e.g. full name, preferences, goals, identity, education, experience, skills, facts, etc.) Then keep showing curioisity on learning more about the user. "
                     "Format it as a bullet point list. If the user mentions their name, call the `update_user_name` function. "
                     "Do not return small talk or filler content."
                 )
@@ -67,10 +68,21 @@ async def voice_webhook(request: Request):
     choice = extraction_response.choices[0]
 
     # STEP 2.5: Execute GPT-suggested tool (if any)
+    # Before calling update_full_name
     if choice.finish_reason == "function_call":
         func_name = choice.message["function_call"]["name"]
-        args = choice.message["function_call"]["arguments"]
-        execute_function(func_name, args)
+        raw_args = choice.message["function_call"]["arguments"]
+        try:
+            args = json.loads(raw_args)  # ← this is the missing part
+        except Exception as e:
+            print(f"[❌] Failed to parse tool args: {e}")
+            args = {}
+
+        if func_name == "update_user_name":
+            update_full_name(
+                args.get("phone_number", ""),  # avoid key error
+                args.get("full_name", "")
+            )
 
     # STEP 3: Save extracted info as memory
     extracted_info = choice.message.get("content", "")
@@ -78,7 +90,7 @@ async def voice_webhook(request: Request):
 
     # STEP 4: Retrieve full memory
     updated_profile = get_student_by_phone(phone_number)
-    history_text = updated_profile.get("documents", [""])[0]
+    history_text = (updated_profile.get("documents", [""])[0])[:12000]
 
     # STEP 5: Generate assistant reply
     chat_response = openai.ChatCompletion.create(

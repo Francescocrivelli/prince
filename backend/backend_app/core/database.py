@@ -157,7 +157,8 @@ def update_conversation_history(phone_number: str, conversation_text: str):
 def update_full_name(phone_number: str, full_name: str):
     existing = get_student_by_phone(phone_number)
 
-    if not existing:
+    if not existing or not existing.get("ids"):
+        print("[❌] No existing user found for update_full_name.")
         return
 
     doc = existing.get("documents", [""])[0] or ""
@@ -166,6 +167,6 @@ def update_full_name(phone_number: str, full_name: str):
 
     students_collection.upsert(
         ids=[phone_number],
-        documents=[doc],
+        documents=[doc],  # non-empty
         metadatas=[metadata]
     )
