@@ -4,6 +4,8 @@ import sys
 from pathlib import Path
 from dotenv import load_dotenv
 import tiktoken
+from backend_app.core.database import get_student_by_phone
+
 
 # Add the backend directory to the Python path
 backend_dir = str(Path(__file__).parent.parent / "backend")
@@ -25,7 +27,6 @@ print("Python Path:", sys.path)
 try:
    
     print("\n📡 Importing database module...")
-    from backend_app.core.database import get_student_by_phone
 
     def view_user(phone):
         data = get_student_by_phone(phone)

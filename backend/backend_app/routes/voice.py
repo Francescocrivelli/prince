@@ -109,7 +109,7 @@ async def voice_webhook(request: Request):
                     "role": "system",
                     "content": (
                         "You're a friendly buddy learning about the user's life, uniqueness, past work experience, goals, and preferences, what he is building, and what he is looking for. You remember the user's past responses and use them "
-                        "to carry a meaningful, helpful conversation. Ask thoughtful follow-up questions or offer help."
+                        "to carry a meaningful, helpful conversation. Ask thoughtful follow-up questions"
                     )
                 },
                 {"role": "system", "content": f"User memory:\n{history_text}"},
