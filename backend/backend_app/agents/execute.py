@@ -1,36 +1,75 @@
-# backend_app/agents/execute.py
+# backend_app/agents/functions.py
+from typing import List, Dict
 
-import json
-from backend_app.core.database import update_full_name, query_by_prompt
+function_definitions: List[Dict] = [
+    {
+        "name": "update_user_name",
+        "description": "Update the full name of the user based on what they said.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "full_name": {
+                    "type": "string",
+                    "description": "The user's full name, e.g., 'Jane Smith'"
+                },
+                "phone_number": {
+                    "type": "string",
+                    "description": "The user's phone number, used as unique ID"
+                }
+            },
+            "required": ["full_name", "phone_number"]
+        }
+    },
+    {
+        "name": "query_by_prompt",
+        "description": "Query the user's profile based on a prompt",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "prompt": {
+                    "type": "string",
+                    "description": "The prompt to query the user's profile"
+                }
+            },
+            "required": ["prompt", "phone_number"]
+        }
+        
+    }
+]# backend_app/agents/functions.py
+from typing import List, Dict
 
-function_registry = {
-    "update_user_name": lambda args: update_full_name(
-        args.get("phone_number", ""),
-        args.get("full_name", "")
-    ),
-    "query_by_prompt": lambda args: query_by_prompt(
-        args.get("prompt", ""),
-        exclude_user_id=args.get("phone_number")
-    )   
-
-
-    # Add more functions here in the future
-}
-
-def execute_function(function_name: str, arguments: str):
-    try:
-        parsed_args = json.loads(arguments)
-    except Exception as e:
-        print(f"[⚠️] Failed to parse arguments for {function_name}: {e}")
-        return {"error": str(e)}
-
-    func = function_registry.get(function_name)
-    if not func:
-        print(f"[⚠️] Unknown function: {function_name}")
-        return {"error": "Function not registered"}
-
-    try:
-        return func(parsed_args)
-    except Exception as e:
-        print(f"[❌] Function {function_name} execution error: {e}")
-        return {"error": str(e)}
+function_definitions: List[Dict] = [
+    {
+        "name": "update_user_name",
+        "description": "Update the full name of the user based on what they said.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "full_name": {
+                    "type": "string",
+                    "description": "The user's full name, e.g., 'Jane Smith'"
+                },
+                "phone_number": {
+                    "type": "string",
+                    "description": "The user's phone number, used as unique ID"
+                }
+            },
+            "required": ["full_name", "phone_number"]
+        }
+    },
+    {
+        "name": "query_by_prompt",
+        "description": "Query the user's profile based on a prompt",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "prompt": {
+                    "type": "string",
+                    "description": "The prompt to query the user's profile"
+                }
+            },
+            "required": ["prompt", "phone_number"]
+        }
+        
+    }
+]
