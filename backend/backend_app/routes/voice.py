@@ -1,15 +1,13 @@
 # backend_app/routes/voice.py
-
 from fastapi import APIRouter, Request, Response
 from fastapi.responses import JSONResponse
 from backend_app.core.database import (
     get_student_by_phone,
     create_student_with_phone,
     update_conversation_history,
-    update_full_name
+    update_full_name,
 )
 from backend_app.agents.functions import function_definitions
-from backend_app.agents.execute import execute_function
 import openai
 import os
 import json
@@ -42,79 +40,89 @@ async def voice_webhook(request: Request):
 
     openai.api_key = os.getenv("OPENAI_API_KEY")
 
-    # STEP 1: Get or create user in Chroma
+    # STEP 1: Get/create user
     profile = get_student_by_phone(phone_number)
     if not profile or not profile.get("documents"):
         create_student_with_phone(phone_number)
+    profile = get_student_by_phone(phone_number)  # Refresh profile from DB
 
-    # STEP 2: Call GPT to extract info + maybe run function
-    extraction_response = openai.ChatCompletion.create(
-        model="gpt-4",
-        messages=[
-            {
-                "role": "system",
-                "content": (
-                    "Extract user information (e.g. full name, preferences, goals, identity, education, experience, skills, facts, etc.) Then keep showing curioisity on learning more about the user. "
-                    "Format it as a bullet point list. If the user mentions their name, call the `update_user_name` function. "
-                    "Do not return small talk or filler content."
-                )
-            },
-            {"role": "user", "content": user_input}
-        ],
-        functions=function_definitions,
-        function_call="auto"
-    )
-
-    choice = extraction_response.choices[0]
-
-    # STEP 2.5: Execute GPT-suggested tool (if any)
-    # Before calling update_full_name
-    if choice.finish_reason == "function_call":
-        func_name = choice.message["function_call"]["name"]
-        raw_args = choice.message["function_call"]["arguments"]
-        try:
-            args = json.loads(raw_args)  # ← this is the missing part
-        except Exception as e:
-            print(f"[❌] Failed to parse tool args: {e}")
-            args = {}
-
-        if func_name == "update_user_name":
-            update_full_name(
-                args.get("phone_number", ""),  # avoid key error
-                args.get("full_name", "")
-            )
-
-    # STEP 3: Save extracted info as memory
-    extracted_info = choice.message.get("content", "")
-    update_conversation_history(phone_number, extracted_info)
-
-    # STEP 4: Retrieve full memory
+    # STEP 2: Get memory
     updated_profile = get_student_by_phone(phone_number)
-    history_text = (updated_profile.get("documents", [""])[0])[:12000]
+    history_text = (updated_profile.get("documents", [""])[0])[:12000]  # Truncate long history
+    metadata = updated_profile.get("metadatas", [{}])[0]
+    full_name = metadata.get("full_name")
 
-    # STEP 5: Generate assistant reply
-    chat_response = openai.ChatCompletion.create(
-        model="gpt-4",
-        messages=[
-            {
-                "role": "system",
-                "content": (
-                    "You're a helpful, friendly AI assistant that remembers what the user said before. "
-                    "Use memory to personalize your response and ask follow-ups."
-                    "If the user mentions their name, use the update_user_name function to update the user's name."
-                )
-            },
-            {"role": "system", "content": f"User memory:\n{history_text}"},
-            {"role": "user", "content": user_input}
-        ]
-    )
-    gpt_reply = chat_response.choices[0].message["content"]
+    # STEP 3: Generate first message if no input
+    if not user_input:
+        if full_name:
+            gpt_reply = f"Hey {full_name}, how’s everything going?"
+        else:
+            gpt_reply = "Hi! Before we get started, may I know your name?"
+    else:
+        # STEP 4: Call GPT to extract info + maybe run function
+        extraction_response = openai.ChatCompletion.create(
+            model="gpt-4",
+            messages=[
+                {
+                    "role": "system",
+                    "content": (
+                        "Extract only important user information (e.g. Full name, goals, facts, preferences, identity) "
+                        "from this input. Format as a bullet point list. Omit filler or small talk. "
+                        "If the user mentions their name, use the update_user_name function to update the user's name."
+                    )
+                },
+                {"role": "user", "content": user_input}
+            ],
+            functions=function_definitions,
+            function_call="auto"
+        )
 
-    # STEP 6: Twilio voice response
+        choice = extraction_response.choices[0]
+
+        # STEP 4.5: Handle function call
+        if choice.finish_reason == "function_call":
+            func_name = choice.message["function_call"]["name"]
+            raw_args = choice.message["function_call"]["arguments"]
+            try:
+                args = json.loads(raw_args)
+            except Exception as e:
+                print(f"[❌] Failed to parse tool args: {e}")
+                args = {}
+
+            if func_name == "update_user_name":
+                full_name = args.get("full_name", "")
+                if full_name:
+                    update_full_name(phone_number, full_name)
+                else:
+                    print("[❌] Full name missing in function call args.")
+
+        # STEP 5: Save only user's input info
+        extracted_info = choice.message.get("content", "")
+        if extracted_info:
+            update_conversation_history(phone_number, extracted_info)
+
+        # STEP 6: Generate reply to user
+        chat_response = openai.ChatCompletion.create(
+            model="gpt-4",
+            messages=[
+                {
+                    "role": "system",
+                    "content": (
+                        "You're a friendly AI assistant. You remember the user's past responses and use them "
+                        "to carry a meaningful, helpful conversation. Ask thoughtful follow-up questions or offer help."
+                    )
+                },
+                {"role": "system", "content": f"User memory:\n{history_text}"},
+                {"role": "user", "content": user_input}
+            ]
+        )
+        gpt_reply = chat_response['choices'][0]['message']['content']
+
+    # STEP 7: Twilio XML response
     twiml = f"""
     <Response>
         <Say>{gpt_reply}</Say>
-        <Gather input="speech" action="/twilio/voice" method="POST" timeout="3"/>
+        <Gather input="speech" action="/twilio/voice" method="POST" timeout="3" />
     </Response>
     """
     return Response(content=twiml.strip(), media_type="application/xml")
