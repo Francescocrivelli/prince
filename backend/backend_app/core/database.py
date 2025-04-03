@@ -132,12 +132,18 @@ def update_conversation_history(phone_number: str, conversation_text: str):
     metadata = {"user_id": phone_number}
 
     if existing:
-        if existing.get('documents') and existing['documents'][0]:
-            current_doc = existing['documents'][0]
-        if existing.get('metadatas') and existing['metadatas'][0]:
-            metadata = existing['metadatas'][0]
+        if existing.get("documents") and existing["documents"][0]:
+            current_doc = existing["documents"][0]
+        if existing.get("metadatas") and existing["metadatas"][0]:
+            metadata = existing["metadatas"][0]
 
-    # Append extracted facts with a newline
+    # Make sure conversation_text is a string
+    conversation_text = conversation_text or ""
+
+    # Skip upsert if there's nothing to store
+    if not conversation_text.strip():
+        return
+
     updated_doc = (current_doc + "\n" + conversation_text).strip()
 
     students_collection.upsert(
@@ -150,15 +156,16 @@ def update_conversation_history(phone_number: str, conversation_text: str):
 
 def update_full_name(phone_number: str, full_name: str):
     existing = get_student_by_phone(phone_number)
-    metadata = {"user_id": phone_number, "full_name": full_name}
 
-    if existing and existing.get("metadatas"):
-        existing_metadata = existing["metadatas"][0]
-        metadata.update(existing_metadata)
-        metadata["full_name"] = full_name
+    if not existing:
+        return
+
+    doc = existing.get("documents", [""])[0] or ""
+    metadata = existing.get("metadatas", [{}])[0]
+    metadata["full_name"] = full_name
 
     students_collection.upsert(
         ids=[phone_number],
-        documents=existing.get("documents", [""]),
+        documents=[doc],
         metadatas=[metadata]
     )

@@ -5,8 +5,10 @@ from backend_app.core.database import update_full_name
 
 function_registry = {
     "update_user_name": lambda args: update_full_name(
-        args["phone_number"], args["full_name"]
+        args.get("phone_number", ""),
+        args.get("full_name", "")
     ),
+
     # Add more functions here in the future
 }
 
