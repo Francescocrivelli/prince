@@ -15,7 +15,7 @@ load_dotenv()
 CHROMA_HOST = os.environ.get("CHROMA_HOST", "localhost")  # Default to 'localhost' for local dev
 CHROMA_PORT = int(os.environ.get("CHROMA_PORT", "8001"))  # Use port 8001 for local dev to match docker-compose
 
-print("🔄 Initializing ChromaDB with:", CHROMA_HOST, CHROMA_PORT)  # Debug line
+print("🔄 Initializing  ChromaDB with:", CHROMA_HOST, CHROMA_PORT)  # Debug line
 
 # Use BGE-small model for embeddings
 embedding_function = embeddings.BGEEmbeddingFunction()
