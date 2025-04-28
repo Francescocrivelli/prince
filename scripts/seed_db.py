@@ -71,7 +71,7 @@ PROFILES = [
     {
         "phone": "+14155551005",
         "full_name": "Sophia Rodriguez",
-        "document": """
+        "document": """ 
 - Leading computer vision team at Tesla Autopilot
 - Stanford MS in CS, specialized in robotics
 - Published pioneering work on 3D scene understanding
